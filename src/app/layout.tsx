@@ -34,7 +34,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${vt323.variable} ${racespace.variable}`}>
+      <body
+        className={`${vt323.variable} ${racespace.variable} bg-black bg-gradient-to-b from-transparent to-electric-green-900 text-electric-green-100`}
+      >
         {children}
       </body>
     </html>
