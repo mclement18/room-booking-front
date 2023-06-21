@@ -1,10 +1,25 @@
 import './globals.css';
 import { VT323 } from 'next/font/google';
+import localFont from 'next/font/local';
 
 const vt323 = VT323({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-vt323',
+});
+
+const racespace = localFont({
+  variable: '--font-racespace',
+  src: [
+    {
+      path: './RACESPACEREGULAR.otf',
+      style: 'normal',
+    },
+    {
+      path: './RACESPACESTRIPE.otf',
+      style: 'italic',
+    },
+  ],
 });
 
 export const metadata = {
@@ -19,7 +34,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={vt323.className}>{children}</body>
+      <body className={`${vt323.variable} ${racespace.variable}`}>
+        {children}
+      </body>
     </html>
   );
 }
