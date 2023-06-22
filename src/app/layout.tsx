@@ -1,6 +1,9 @@
+import NavBar from '@/components/NavBar';
 import './globals.css';
 import { VT323 } from 'next/font/google';
 import localFont from 'next/font/local';
+import ContentWrapper from '@/components/ContentWrapper';
+import Footer from '@/components/Footer';
 
 const vt323 = VT323({
   weight: '400',
@@ -35,9 +38,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${vt323.variable} ${racespace.variable} bg-black bg-gradient-to-b from-transparent to-electric-green-900 text-electric-green-100`}
+        className={`${vt323.variable} ${racespace.variable} min-h-screen-d relative bg-black bg-gradient-to-b from-transparent to-electric-green-900 text-electric-green-100 font-mono`}
       >
-        {children}
+        <NavBar />
+        <div className="mb-9">
+          <ContentWrapper>{children}</ContentWrapper>
+        </div>
+        <Footer />
       </body>
     </html>
   );
