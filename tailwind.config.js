@@ -38,6 +38,7 @@ module.exports = {
         flare: '5s linear 1.5s 1 forwards flare',
         'sparkle-right': '5s linear 1.7s 1 forwards sparkle',
         'sparkle-left': '5s linear 2.1s 1 forwards sparkle',
+        blink: '0.4s step-end infinite blink',
       },
       keyframes: {
         flare: {
@@ -47,6 +48,10 @@ module.exports = {
         sparkle: {
           '0%, 30%, 60%, 100%': { opacity: 0 },
           '40%': { opacity: 0.8 },
+        },
+        blink: {
+          'from, to': { opacity: 1 },
+          '50%': { opacity: 0 },
         },
       },
       boxShadow: {

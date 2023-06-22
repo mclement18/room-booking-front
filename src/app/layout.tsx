@@ -38,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${vt323.variable} ${racespace.variable} min-h-screen-d relative bg-black bg-gradient-to-b from-transparent to-electric-green-900 text-electric-green-100 font-mono`}
+        className={`${vt323.variable} ${racespace.variable} min-h-screen-d relative bg-black bg-gradient-to-b from-transparent from-50% to-electric-green-900 text-electric-green-100 font-mono`}
       >
         <NavBar />
         <div className="mb-9">
