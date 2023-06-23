@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import TerminalNewLine from './TerminalNewLine';
 
 interface TerminalParagraphProps {
   text: string;
@@ -38,13 +39,7 @@ const TerminalParagraph = ({
   }, [onTerminated, printedText.length, printing, skip, text]);
 
   return (
-    <p
-      className={`${
-        printing ? "after:content-['']" : 'after:content-none'
-      } after:animate-blink after:h-full after:border-r-4 after:border-electric-green-100`}
-    >
-      {printedText}
-    </p>
+    <TerminalNewLine disableCursor={!printing}>{printedText}</TerminalNewLine>
   );
 };
 

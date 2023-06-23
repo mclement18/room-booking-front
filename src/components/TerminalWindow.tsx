@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import TerminalParagraph from './TerminalParagraph';
+import TerminalNewLine from './TerminalNewLine';
 
 interface TerminalWindowProps {
   paragraphs: string[];
@@ -36,7 +37,7 @@ const TerminalWindow = ({ paragraphs }: TerminalWindowProps) => {
         bg-gradient-radial from-electric-green-800 from-5% via-electric-green-900 via-30% to-black
       "
     >
-      {printUntil >= 0 &&
+      {printUntil >= 0 ? (
         paragraphs
           .slice(0, printUntil + 1)
           .map((paragraph, idx) => (
@@ -46,7 +47,11 @@ const TerminalWindow = ({ paragraphs }: TerminalWindowProps) => {
               skip={skip}
               onTerminated={printNext(idx)}
             />
-          ))}
+          ))
+      ) : (
+        <TerminalNewLine />
+      )}
+      {printUntil === paragraphs.length && <TerminalNewLine />}
       {printUntil < paragraphs.length && printUntil >= 0 && (
         <div className="flex justify-end w-full p-5 absolute bottom-0 right-0">
           <span
