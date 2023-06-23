@@ -1,0 +1,18 @@
+@import './variables';
+@import 'react-big-calendar/lib/sass/styles';
+
+.rbc-header {
+  font-weight: normal;
+  font-size: large;
+}
+
+.rbc-toolbar-label {
+  font-size: larger;
+}
+
+.rbc-allday-cell {
+  display: none;
+}
+.rbc-time-view .rbc-header {
+  border-bottom: none;
+}

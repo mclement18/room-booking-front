@@ -30,10 +30,10 @@ const TerminalParagraph = ({
       } else {
         if (!printing) setPrinting(true);
         setPrintedText((currentText) => text.slice(0, currentText.length + 1));
-        timeoutId = window.setTimeout(print, 70);
+        timeoutId = window.setTimeout(print, 20);
       }
     }
-    timeoutId = window.setTimeout(print, 70);
+    timeoutId = window.setTimeout(print, 20);
     return () => clearTimeout(timeoutId);
   }, [onTerminated, printedText.length, printing, skip, text]);
 

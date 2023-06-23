@@ -31,7 +31,7 @@ const TerminalWindow = ({ paragraphs }: TerminalWindowProps) => {
   return (
     <div
       className="
-        max-w-[600px] mx-auto min-h-[250px] p-5
+        max-w-[600px] mx-auto min-h-[250px] p-5 relative
         rounded-md border border-electric-green-700
         bg-gradient-radial from-electric-green-800 from-5% via-electric-green-900 via-30% to-black
       "
@@ -48,15 +48,13 @@ const TerminalWindow = ({ paragraphs }: TerminalWindowProps) => {
             />
           ))}
       {printUntil < paragraphs.length && printUntil >= 0 && (
-        <div className="flex flex-col justify-end h-full">
-          <div className="flex justify-end">
-            <span
-              className="hover:text-electric-green-400 hover:underline cursor-pointer"
-              onClick={onSkip}
-            >
-              Skip &gt;&gt;
-            </span>
-          </div>
+        <div className="flex justify-end w-full p-5 absolute bottom-0 right-0">
+          <span
+            className="hover:text-electric-green-400 hover:underline cursor-pointer"
+            onClick={onSkip}
+          >
+            Skip &gt;&gt;
+          </span>
         </div>
       )}
     </div>

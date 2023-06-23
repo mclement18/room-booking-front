@@ -8,12 +8,12 @@ const NavBar = () => {
   const pathname = usePathname();
 
   return (
-    <div className="p-3 w-full border-b bg-black border-b-electric-green-700 sticky top-0 z-50">
+    <div className="py-3 w-full border-b bg-black border-b-electric-green-700 sticky top-0 z-50">
       <ContentWrapper>
         <div className="flex items-center">
           <span
             className="
-              font-title italic text-4xl
+              font-title italic text-lg md:text-4xl 
               relative inline-block text-transparent
               bg-clip-text bg-gradient-to-b from-electric-green-100 from-30%
               via-electric-green-400 to-electric-green-100 to-70%
@@ -41,7 +41,7 @@ const NavBar = () => {
           <nav className="ml-auto flex items-center">
             <Link href="/events">
               <span
-                className={`text-2xl hover:text-electric-green-400 mr-3 ${
+                className={`md:text-2xl hover:text-electric-green-400 mr-3 ${
                   pathname === '/events' ? 'underline' : ''
                 }`}
               >
@@ -50,7 +50,7 @@ const NavBar = () => {
             </Link>
             <Link href="/rooms">
               <span
-                className={`text-2xl hover:text-electric-green-400 ${
+                className={`md:text-2xl hover:text-electric-green-400 ${
                   pathname === '/rooms' ? 'underline' : ''
                 }`}
               >
