@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    env_file:
+      - ./.dev/envs/postgres.env
+    volumes:
+      - /home/mclement/projects/emy-room-booking-frontend/.dev/db:/var/lib/postgresql/data:rw
+    ports:
+      - "5432:5432"
+
+  app:
+    image: emy_backend
+    env_file:
+      - ./.dev/envs/app.env
+    ports:
+      - "3000:3000"
