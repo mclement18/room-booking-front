@@ -22,7 +22,7 @@ const localizer = dateFnsLocalizer({
 const EventsCalendar = () => {
   return (
     <div className="h-[600px]">
-      <Calendar localizer={localizer} showMultiDayTimes />
+      <Calendar localizer={localizer} selectable showMultiDayTimes />
     </div>
   );
 };
