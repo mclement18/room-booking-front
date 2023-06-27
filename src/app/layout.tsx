@@ -4,6 +4,7 @@ import { VT323 } from 'next/font/google';
 import localFont from 'next/font/local';
 import ContentWrapper from '@/components/ContentWrapper';
 import Footer from '@/components/Footer';
+import AlertProvider from '@/components/AlertProvider';
 
 const vt323 = VT323({
   weight: '400',
@@ -42,7 +43,9 @@ export default function RootLayout({
       >
         <NavBar />
         <div className="pb-9">
-          <ContentWrapper>{children}</ContentWrapper>
+          <AlertProvider>
+            <ContentWrapper>{children}</ContentWrapper>
+          </AlertProvider>
         </div>
         <Footer />
       </body>
