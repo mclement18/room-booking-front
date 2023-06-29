@@ -43,11 +43,11 @@ export class EventApiService
         path: id.toString(),
         init: { method: 'PATCH', body: JSON.stringify(dto) },
       });
-      this.showSuccess(`Event "${response.name}" updated successfully!`);
+      this.showSuccess(`Event updated successfully!`);
       return response;
     } catch (error) {
       this.showErrorWithMessage(
-        'An error occured during event updated...',
+        'An error occured during event update...',
         error as Error
       );
       console.error(error);
@@ -60,7 +60,7 @@ export class EventApiService
         path: id.toString(),
         init: { method: 'DELETE' },
       });
-      this.showSuccess(`Event "${response.name}" deleted successfully!`);
+      this.showSuccess(`Event deleted successfully!`);
       return response;
     } catch (error) {
       this.showErrorWithMessage(

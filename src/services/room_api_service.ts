@@ -43,11 +43,11 @@ export class RoomApiService
         path: id.toString(),
         init: { method: 'PATCH', body: JSON.stringify(dto) },
       });
-      this.showSuccess(`Room "${response.name}" created successfully!`);
+      this.showSuccess(`Room updated successfully!`);
       return response;
     } catch (error) {
       this.showErrorWithMessage(
-        'An error occured during event creation...',
+        'An error occured during event update...',
         error as Error
       );
       console.error(error);
@@ -60,11 +60,11 @@ export class RoomApiService
         path: id.toString(),
         init: { method: 'DELETE' },
       });
-      this.showSuccess(`Room "${response.name}" created successfully!`);
+      this.showSuccess(`Room deleted successfully!`);
       return response;
     } catch (error) {
       this.showErrorWithMessage(
-        'An error occured during event creation...',
+        'An error occured during event deletion...',
         error as Error
       );
       console.error(error);

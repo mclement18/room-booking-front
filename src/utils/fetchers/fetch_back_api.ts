@@ -39,7 +39,10 @@ export function useBackendApi<Data = unknown>(
       : path === null
       ? path
       : apiOptions?.from
-      ? `${joinUrl(apiUrl, path)}?from=${apiOptions.from}&to=${apiOptions.to}`
+      ? `${joinUrl(
+          apiUrl,
+          path
+        )}?from=${apiOptions.from.toJSON()}&to=${apiOptions.to.toJSON()}`
       : joinUrl(apiUrl, path);
 
   return useSWR<Data>(url, fetchJSON, config);
