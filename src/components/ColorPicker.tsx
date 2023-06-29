@@ -19,6 +19,7 @@ import {
   useMergeRefs,
 } from '@floating-ui/react';
 import { Color, colors } from '@/constants/colors';
+import ColorSwatch from './ColorSwatch';
 
 interface ColorPickerProp {
   name?: string;
@@ -55,20 +56,6 @@ const ColorPicker = forwardRef<HTMLInputElement, ColorPickerProp>(
 
     const [colorValue, setColorValue] = useState<Color>(value || 'blue');
     const inputId = useId();
-
-    const colorClasses: Record<Color, string> = {
-      blue: 'border-electric-blue-700 hover:border-electric-blue-300 bg-electric-blue-100',
-      lightblue:
-        'border-electric-lightblue-700 hover:border-electric-lightblue-300 bg-electric-lightblue-100',
-      orange:
-        'border-electric-orange-700 hover:border-electric-orange-300 bg-electric-orange-100',
-      pink: 'border-electric-pink-700 hover:border-electric-pink-300 bg-electric-pink-100',
-      red: 'border-electric-red-700 hover:border-electric-red-300 bg-electric-red-100',
-      violet:
-        'border-electric-violet-700 hover:border-electric-violet-300 bg-electric-violet-100',
-      yellow:
-        'border-electric-yellow-700 hover:border-electric-yellow-300 bg-electric-yellow-100',
-    };
 
     const swatchClick =
       (color: Color) => (event: React.MouseEvent<HTMLSpanElement>) => {
@@ -126,12 +113,13 @@ const ColorPicker = forwardRef<HTMLInputElement, ColorPickerProp>(
           value={colorValue}
           hidden
         />
-        <span
+        <ColorSwatch
           ref={mergedRef}
           tabIndex={0}
-          className={`inline-block cursor-pointer w-6 h-6 rounded-full border ${colorClasses[colorValue]}`}
+          color={colorValue}
+          className="cursor-pointer"
           {...getReferenceProps()}
-        ></span>
+        />
         {isOpen && (
           <FloatingFocusManager context={context} initialFocus={0}>
             <div
@@ -145,14 +133,15 @@ const ColorPicker = forwardRef<HTMLInputElement, ColorPickerProp>(
               {...getFloatingProps()}
             >
               {colors.map((color) => (
-                <span
+                <ColorSwatch
                   key={color}
                   tabIndex={0}
-                  className={`inline-block cursor-pointer w-6 h-6 rounded-full border ${colorClasses[color]}`}
+                  color={color}
+                  className="cursor-pointer"
                   title={color}
                   onClick={swatchClick(color)}
                   onKeyDown={swatchKeyDown(color)}
-                ></span>
+                />
               ))}
             </div>
           </FloatingFocusManager>
