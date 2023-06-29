@@ -17,4 +17,12 @@
   border-bottom: none;
 }
 
+// Override unconfigurable color style
+.rbc-time-view-resources {
+  .rbc-time-gutter,
+  .rbc-time-header-gutter {
+    background-color: transparent;
+  }
+}
+
 @import './event';
