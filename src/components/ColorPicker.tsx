@@ -50,7 +50,7 @@ const ColorPicker = forwardRef<HTMLInputElement, ColorPickerProp>(
 
     const mergedRef = useMergeRefs([swatchRef, refs.setReference]);
 
-    const click = useClick(context);
+    const click = useClick(context, { event: 'mousedown' });
 
     const { getReferenceProps, getFloatingProps } = useInteractions([click]);
 
@@ -115,6 +115,7 @@ const ColorPicker = forwardRef<HTMLInputElement, ColorPickerProp>(
         />
         <ColorSwatch
           ref={mergedRef}
+          component="button"
           tabIndex={0}
           color={colorValue}
           className="cursor-pointer"
@@ -135,6 +136,7 @@ const ColorPicker = forwardRef<HTMLInputElement, ColorPickerProp>(
               {colors.map((color) => (
                 <ColorSwatch
                   key={color}
+                  component="button"
                   tabIndex={0}
                   color={color}
                   className="cursor-pointer"
