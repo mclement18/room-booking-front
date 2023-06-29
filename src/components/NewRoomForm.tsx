@@ -7,13 +7,20 @@ import useAlertContext from '@/hooks/useAlertContext';
 import { RoomApiService } from '@/services/room_api_service';
 import { useApiService } from '@/hooks/useApiService';
 import useValidateRoomNameUniqueness from '@/hooks/validators/useValidateRoomNameUniqueness';
+import { KeyedMutator } from 'swr';
+import RoomDto from '@/dtos/room_dto';
+import Button from './Button';
 
 interface NewRoomFormInputs {
   name: string;
   color: Color;
 }
 
-const NewRoomForm = () => {
+interface NewRoomFormProps {
+  mutateRooms: KeyedMutator<RoomDto[]>;
+}
+
+const NewRoomForm = ({ mutateRooms }: NewRoomFormProps) => {
   const {
     register,
     handleSubmit,
@@ -38,6 +45,7 @@ const NewRoomForm = () => {
     const response = await roomApiService.create({ name, color });
     if (response) {
       reset();
+      mutateRooms();
     } else {
       setFocus('name');
     }
@@ -70,16 +78,7 @@ const NewRoomForm = () => {
         <div className="mr-3">
           <ColorPicker label="Color" {...register('color')} />
         </div>
-        <button
-          type="submit"
-          className="
-            border border-electric-green-700 px-1
-            hover:bg-electric-green-600 hover:border-electric-green-400
-            active:bg-electric-green-700 active:border-electric-green-500
-          "
-        >
-          CREATE
-        </button>
+        <Button type="submit">CREATE</Button>
       </form>
     </details>
   );
