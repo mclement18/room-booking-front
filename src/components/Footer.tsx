@@ -2,7 +2,7 @@ import React from 'react';
 import ContentWrapper from './ContentWrapper';
 
 const Footer = () => (
-  <div className="absolute bottom-0 w-full p-2">
+  <footer className="absolute bottom-0 w-full p-2">
     <ContentWrapper>
       <div className="flex items-center justify-end">
         <span className="text-sm text-electric-green-300">
@@ -13,7 +13,7 @@ const Footer = () => (
         </span>
       </div>
     </ContentWrapper>
-  </div>
+  </footer>
 );
 
 export default Footer;
