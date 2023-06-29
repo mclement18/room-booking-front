@@ -3,9 +3,10 @@ import React, { ButtonHTMLAttributes, forwardRef } from 'react';
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, children, ...other }) => {
+  ({ className, children, ...other }, ref) => {
     return (
       <button
+        ref={ref}
         {...other}
         className={`
           border border-electric-green-700 px-1
