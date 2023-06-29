@@ -10,6 +10,7 @@ import useValidateRoomNameUniqueness from '@/hooks/validators/useValidateRoomNam
 import { KeyedMutator } from 'swr';
 import RoomDto from '@/dtos/room_dto';
 import Button from './Button';
+import AnimatedDetails from './AnimatedDetails';
 
 interface NewRoomFormInputs {
   name: string;
@@ -63,8 +64,14 @@ const NewRoomForm = ({ mutateRooms }: NewRoomFormProps) => {
   }, [errors.name]);
 
   return (
-    <details>
-      <summary className="text-2xl mb-5 cursor-pointer w-max">New Room</summary>
+    <AnimatedDetails
+      openedMaxHeightClass="open:max-h-44"
+      className="max-h-[54px] open:max-h-44 duration-200"
+      summaryProps={{
+        className: 'text-2xl',
+        children: 'New Room',
+      }}
+    >
       <form className="flex" onSubmit={handleSubmit(onSubmit)}>
         <div className="mr-3">
           <TextField
@@ -80,7 +87,7 @@ const NewRoomForm = ({ mutateRooms }: NewRoomFormProps) => {
         </div>
         <Button type="submit">CREATE</Button>
       </form>
-    </details>
+    </AnimatedDetails>
   );
 };
 

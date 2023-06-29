@@ -1,5 +1,5 @@
 import type RoomDto from '@/dtos/room_dto';
-import { useEffect, useState } from 'react';
+import { MouseEventHandler, useEffect, useState } from 'react';
 import TextField from './TextField';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Color } from '@/constants/colors';
@@ -13,6 +13,7 @@ import updateOrUndefined from '@/utils/updateOrUndefined';
 import Button from './Button';
 import ColorSwatch from './ColorSwatch';
 import RoomCalendar from './RoomCalendar';
+import AnimatedDetails from './AnimatedDetails';
 
 interface RoomEditFormInputs {
   name: string;
@@ -70,86 +71,101 @@ const RoomDisplay = ({ room, mutateRooms }: RoomDisplayProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errors.name]);
 
-  const onDelete = async () => {
+  const onDelete: MouseEventHandler<HTMLButtonElement> = async (event) => {
+    event.stopPropagation();
     const response = await roomApiService.delete(room.id);
     if (response) {
       mutateRooms();
     }
   };
 
-  const onEdit = () => setEdit(true);
+  const onEdit: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.stopPropagation();
+    setEdit(true);
+  };
 
-  const onCancel = () => {
+  const onCancel: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.stopPropagation();
     setEdit(false);
     reset();
   };
 
   return (
-    <details>
-      <summary className="w-max mb-5 text-xl cursor-pointer">
-        {edit ? (
-          <form
-            className="inline-flex text-lg"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="mr-3">
-              <TextField
-                label="Name"
-                {...register('name', {
-                  required: 'Room name is required!',
-                  validate: { uniqueness: validatteRoomNameUniqueness },
-                })}
-              />
-            </div>
-            <div className="mr-3">
-              <ColorPicker
-                label="Color"
-                {...register('color')}
-                value={room.color}
-              />
-            </div>
-            <Button
-              type="submit"
-              className="mr-3 text-sm self-center"
-              disabled={!isDirty}
-            >
-              UPDATE
-            </Button>
-            <Button
-              type="button"
-              onClick={onCancel}
-              className="mr-3 text-sm self-center"
-            >
-              CANCEL
-            </Button>
-          </form>
-        ) : (
-          <div className="inline-flex">
-            <h3 className="mr-3">{room.name}</h3>
-            <ColorSwatch
-              color={room.color}
-              title={room.color}
-              className="mr-3"
-            />
-            <Button
-              type="button"
-              onClick={onEdit}
-              className="mr-3 text-sm self-center"
-            >
-              EDIT
-            </Button>
-            <Button
-              type="button"
-              onClick={onDelete}
-              className="mr-3 text-sm self-center"
-            >
-              DELETE
-            </Button>
-          </div>
-        )}
-      </summary>
+    <AnimatedDetails
+      openedMaxHeightClass="open:max-h-[800px]"
+      className="max-h-[49.5px] open:max-h-[800px] duration-500"
+      summaryProps={{
+        className: 'text-xl',
+        children: (
+          <>
+            {edit ? (
+              <form
+                className="inline-flex text-lg"
+                onClick={(e) => e.stopPropagation()}
+                onSubmit={handleSubmit(onSubmit)}
+              >
+                <div className="mr-3">
+                  <TextField
+                    label="Name"
+                    {...register('name', {
+                      required: 'Room name is required!',
+                      validate: { uniqueness: validatteRoomNameUniqueness },
+                    })}
+                  />
+                </div>
+                <div className="mr-3">
+                  <ColorPicker
+                    label="Color"
+                    {...register('color')}
+                    value={room.color}
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  onClick={(event) => event.stopPropagation()}
+                  className="mr-3 text-sm self-center"
+                  disabled={!isDirty}
+                >
+                  UPDATE
+                </Button>
+                <Button
+                  type="button"
+                  onClick={onCancel}
+                  className="mr-3 text-sm self-center"
+                >
+                  CANCEL
+                </Button>
+              </form>
+            ) : (
+              <div className="inline-flex">
+                <h3 className="mr-3">{room.name}</h3>
+                <ColorSwatch
+                  color={room.color}
+                  title={room.color}
+                  className="mr-3"
+                />
+                <Button
+                  type="button"
+                  onClick={onEdit}
+                  className="mr-3 text-sm self-center"
+                >
+                  EDIT
+                </Button>
+                <Button
+                  type="button"
+                  onClick={onDelete}
+                  className="mr-3 text-sm self-center"
+                >
+                  DELETE
+                </Button>
+              </div>
+            )}
+          </>
+        ),
+      }}
+    >
       <RoomCalendar room={room} />
-    </details>
+    </AnimatedDetails>
   );
 };
 
