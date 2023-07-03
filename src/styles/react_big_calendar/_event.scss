@@ -15,7 +15,7 @@ $event-colors: 'blue' $electric-blue-100 $electric-blue-700 $electric-blue-500
     $electric-yellow-900;
 
 // Create class color
-@each $color, $even-bg, $event-border, $event-outline,
+@each $color, $event-bg, $event-border, $event-outline,
   $event-color in $event-colors
 {
   .rbc-event.event-#{$color} {

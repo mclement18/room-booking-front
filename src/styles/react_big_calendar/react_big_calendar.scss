@@ -25,4 +25,17 @@
   }
 }
 
+.rbc-show-more {
+  background-color: transparent;
+}
+
+.rbc-overlay {
+  background: black radial-gradient($electric-green-900 20%, transparent);
+  border-color: $electric-green-700;
+}
+
+.rbc-overlay-header {
+  border-color: $electric-green-700;
+}
+
 @import './event';
