@@ -10,11 +10,8 @@
   font-size: larger;
 }
 
-.rbc-allday-cell {
-  display: none;
-}
-.rbc-time-view .rbc-header {
-  border-bottom: none;
+.rbc-time-view .rbc-time-header-cell .rbc-header {
+  padding-bottom: 10px;
 }
 
 // Override unconfigurable color style
