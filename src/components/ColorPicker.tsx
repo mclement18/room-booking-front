@@ -14,9 +14,11 @@ import {
   offset,
   shift,
   useClick,
+  useDismiss,
   useFloating,
   useInteractions,
   useMergeRefs,
+  useTransitionStyles,
 } from '@floating-ui/react';
 import { Color, colors } from '@/constants/colors';
 import ColorSwatch from './ColorSwatch';
@@ -52,7 +54,14 @@ const ColorPicker = forwardRef<HTMLInputElement, ColorPickerProp>(
 
     const click = useClick(context, { event: 'mousedown' });
 
-    const { getReferenceProps, getFloatingProps } = useInteractions([click]);
+    const dismiss = useDismiss(context);
+
+    const { getReferenceProps, getFloatingProps } = useInteractions([
+      click,
+      dismiss,
+    ]);
+
+    const { isMounted, styles } = useTransitionStyles(context);
 
     const [colorValue, setColorValue] = useState<Color>(value || 'blue');
     const inputId = useId();
@@ -121,13 +130,13 @@ const ColorPicker = forwardRef<HTMLInputElement, ColorPickerProp>(
           className="cursor-pointer"
           {...getReferenceProps()}
         />
-        {isOpen && (
+        {isMounted && (
           <FloatingFocusManager context={context} initialFocus={0}>
             <div
               ref={refs.setFloating}
-              style={floatingStyles}
+              style={{ ...styles, ...floatingStyles }}
               className="
-                  p-2 grid grid-cols-3 gap-2
+                  p-2 grid grid-cols-3 gap-2 z-40
                   bg-black bg-gradient-to-br from-transparent to-electric-green-900
                   rounded border border-electric-green-700
                 "
