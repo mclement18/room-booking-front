@@ -1,6 +1,6 @@
-import RoomDto from '@/dtos/room_dto';
 import React from 'react';
 import BaseCalendar from './BaseCalendar';
+import type RoomDto from '@/dtos/room_dto';
 
 interface RoomCalendarProps {
   room: RoomDto;
@@ -8,7 +8,9 @@ interface RoomCalendarProps {
 
 const RoomCalendar = ({ room }: RoomCalendarProps) => {
   return (
-    <BaseCalendar eventPath={`/room/${room.id}/event`} roomColor={room.color} />
+    <>
+      <BaseCalendar eventPath={`/room/${room.id}/event`} room={room} />
+    </>
   );
 };
 
