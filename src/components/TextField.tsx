@@ -11,10 +11,11 @@ interface TextFieldProps {
   onChange?: ChangeEventHandler<HTMLInputElement>;
   onBlur?: FocusEventHandler<HTMLInputElement>;
   label?: string;
+  className?: string;
 }
 
 const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
-  ({ name, value, onChange, onBlur, label }, ref) => {
+  ({ name, value, onChange, onBlur, label, className }, ref) => {
     const inputId = useId();
     return (
       <fieldset>
@@ -31,10 +32,11 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           value={value}
           onChange={onChange}
           onBlur={onBlur}
-          className="
+          className={`
             px-2 bg-transparent border-b-2 border-electric-green-500 
             focus:border-electric-green-100 focus-visible:outline-none
-          "
+            ${className ? className : ''}
+          `}
         />
       </fieldset>
     );
