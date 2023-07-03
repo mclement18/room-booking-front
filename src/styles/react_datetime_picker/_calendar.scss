@@ -1,0 +1,146 @@
+.react-calendar {
+  width: 350px;
+  max-width: 100%;
+  background: black radial-gradient($electric-green-900 15%, transparent);
+  border: 1px solid $electric-green-700;
+  font-family: var(--font-vt323);
+  line-height: 1.125em;
+
+  &--doubleView {
+    width: 700px;
+  }
+
+  &--doubleView &__viewContainer {
+    display: flex;
+    margin: -0.5em;
+
+    & > * {
+      width: 50%;
+      margin: 0.5em;
+    }
+  }
+
+  &,
+  & *,
+  & *:before,
+  & *:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
+  & button {
+    margin: 0;
+    border: 0;
+    outline: none;
+
+    &:enabled:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__navigation {
+    display: flex;
+    height: 44px;
+    margin-bottom: 1em;
+    font-size: 1.2em;
+
+    & button {
+      min-width: 44px;
+      background: none;
+
+      &:disabled {
+        color: $electric-green-800;
+        background-color: transparent;
+      }
+
+      &:enabled:hover,
+      &:enabled:focus {
+        background-color: $electric-green-800;
+      }
+    }
+  }
+
+  &__month-view__weekdays {
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: normal;
+    font-size: 1em;
+
+    &__weekday {
+      padding: 0.5em;
+    }
+  }
+
+  &__month-view__weekNumbers &__tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+    font-weight: bold;
+  }
+
+  &__month-view__days__day--weekend {
+    color: $electric-red-400;
+  }
+
+  &__month-view__days__day--neighboringMonth {
+    color: $electric-green-800;
+  }
+
+  &__year-view &__tile,
+  &__decade-view &__tile,
+  &__century-view &__tile {
+    padding: 2em 0.5em;
+  }
+
+  &__tile {
+    max-width: 100%;
+    padding: 10px 6.6667px;
+    background: none;
+    text-align: center;
+    line-height: 16px;
+
+    &:disabled {
+      color: $electric-green-700;
+      background-color: $electric-green-900;
+    }
+
+    &:enabled:hover,
+    &:enabled:focus {
+      background-color: $electric-green-800;
+    }
+
+    &--now {
+      background: $electric-green-700;
+
+      &:enabled:hover,
+      &:enabled:focus {
+        background: $electric-green-600;
+      }
+    }
+
+    &--hasActive {
+      background: $electric-green-500;
+
+      &:enabled:hover,
+      &:enabled:focus {
+        background: $electric-green-400;
+      }
+    }
+
+    &--active {
+      background: $electric-green-500;
+      color: $electric-green-100;
+
+      &:enabled:hover,
+      &:enabled:focus {
+        background: $electric-green-400;
+      }
+    }
+  }
+
+  &--selectRange &__tile--hover {
+    background-color: $electric-green-400;
+  }
+}
