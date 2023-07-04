@@ -10,9 +10,15 @@ services:
     ports:
       - "5432:5432"
 
-  app:
+  back:
     image: emy_backend
     env_file:
-      - ./.dev/envs/app.env
+      - ./.dev/envs/back.env
     ports:
-      - "3000:3000"
+      - "3002:3000"
+  front:
+    image: emy_frontend
+    env_file:
+      - ./.dev/envs/front.env
+    ports:
+      - "3001:3000"
