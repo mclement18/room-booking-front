@@ -6,9 +6,11 @@ interface TerminalNewLineProps extends PropsWithChildren {
 
 const TerminalNewLine = ({ disableCursor, children }: TerminalNewLineProps) => (
   <p
-    className={`${
-      disableCursor ? 'after:content-none' : "after:content-['']"
-    } after:animate-blink after:h-full after:border-r-4 after:border-electric-green-100`}
+    className={
+      disableCursor
+        ? ''
+        : 'after:animate-blink after:h-full after:border-r-4 after:border-electric-green-100'
+    }
   >
     {children}
   </p>
