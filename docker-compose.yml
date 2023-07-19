@@ -16,9 +16,9 @@ services:
       - ./.dev/envs/back.env
     ports:
       - "3002:3000"
-  front:
-    image: emy_frontend
-    env_file:
-      - ./.dev/envs/front.env
-    ports:
-      - "3001:3000"
+  # front:
+  #   image: emy_frontend
+  #   env_file:
+  #     - ./.dev/envs/front.env
+  #   ports:
+  #     - "3001:3000"
