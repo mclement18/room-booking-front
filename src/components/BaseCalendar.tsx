@@ -15,8 +15,11 @@ import enUS from 'date-fns/locale/en-US';
 import RoomDto from '@/dtos/room_dto';
 import EventDto from '@/dtos/event_dto';
 import { BackendOptions, useBackendApi } from '@/utils/fetchers/fetch_back_api';
-import EventModal, { EventFormProps, ModalCloseReason } from './EventModal';
+import EventModal, { ModalCloseReason } from './EventModal';
 import clone from 'lodash/clone';
+import EventModalProvider from './EventModalProvider';
+import useEventModalContext from '@/hooks/useEventModalContext';
+import { EventModalActionTypes } from '@/store/event_modal/actions';
 
 const locales = {
   'en-US': enUS,
@@ -35,7 +38,7 @@ type BaseCalendarProps = Omit<CalendarProps<EventDto, RoomDto>, 'localizer'> & {
   room?: RoomDto;
 };
 
-const BaseCalendar = ({
+const BaseCalendarInner = ({
   eventPath,
   room,
   ...calendarProps
@@ -58,15 +61,7 @@ const BaseCalendar = ({
     ...dateRange,
   });
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  const [eventModalProps, setEventModalProps] = useState<EventFormProps>({
-    action: 'create',
-    name: '',
-    start: new Date(),
-    end: new Date(),
-    resourceId: 0,
-  });
+  const { dispatch } = useEventModalContext();
 
   const onRangeChange = (
     range: Date[] | { start: Date; end: Date },
@@ -98,7 +93,6 @@ const BaseCalendar = ({
   };
 
   const onModalClose = (reason: ModalCloseReason) => {
-    setIsOpen(false);
     if (reason === 'success') {
       mutate();
     }
@@ -106,59 +100,61 @@ const BaseCalendar = ({
 
   const onSelectSlot = (slotInfo: SlotInfo) => {
     const { start, end, resourceId } = slotInfo;
-    setEventModalProps({
-      action: 'create',
-      name: '',
-      start,
-      end,
-      resourceId: (resourceId as number) || room?.id,
+    dispatch({
+      type: EventModalActionTypes.SET_CREATE,
+      payload: { start, end, resourceId: (resourceId as number) || room?.id },
     });
-    setIsOpen(true);
   };
 
   const onDoubleClickEvent = (event: EventDto) => {
     const currentRoom = event.room || room;
     if (currentRoom) {
-      setEventModalProps({
-        action: 'edit',
-        event: {
-          ...event,
-          room: currentRoom,
+      const { name, start, end } = event;
+      dispatch({
+        type: EventModalActionTypes.SET_EDIT,
+        payload: {
+          name,
+          start: new Date(start),
+          end: new Date(end),
+          resourceId: currentRoom.id,
+          event: event,
         },
       });
-      setIsOpen(true);
     }
   };
 
   return (
-    <div className="h-[600px]">
-      <Calendar<EventDto, RoomDto>
-        {...calendarProps}
-        localizer={localizer}
-        events={events}
-        titleAccessor={(event) => event.name}
-        tooltipAccessor={(event) => event.name}
-        startAccessor={(event) => new Date(event.start)}
-        endAccessor={(event) => new Date(event.end)}
-        resourceAccessor={(event) => event.room?.id}
-        resourceIdAccessor={(room) => room.id}
-        resourceTitleAccessor={(room) => room.name}
-        onRangeChange={onRangeChange}
-        eventPropGetter={eventPropGetter}
-        onSelectSlot={onSelectSlot}
-        onDoubleClickEvent={onDoubleClickEvent}
-        showMultiDayTimes
-        popup
-        selectable
-      />
-      <EventModal
-        {...eventModalProps}
-        onClose={onModalClose}
-        open={isOpen}
-        onOpenChange={setIsOpen}
-      />
-    </div>
+    <>
+      <div className="h-[600px]">
+        <Calendar<EventDto, RoomDto>
+          {...calendarProps}
+          localizer={localizer}
+          events={events}
+          titleAccessor={(event) => event.name}
+          tooltipAccessor={(event) => event.name}
+          startAccessor={(event) => new Date(event.start)}
+          endAccessor={(event) => new Date(event.end)}
+          resourceAccessor={(event) => event.room?.id}
+          resourceIdAccessor={(room) => room.id}
+          resourceTitleAccessor={(room) => room.name}
+          onRangeChange={onRangeChange}
+          eventPropGetter={eventPropGetter}
+          onSelectSlot={onSelectSlot}
+          onDoubleClickEvent={onDoubleClickEvent}
+          showMultiDayTimes
+          popup
+          selectable
+        />
+      </div>
+      <EventModal onClose={onModalClose} />
+    </>
   );
 };
+
+const BaseCalendar = (props: BaseCalendarProps) => (
+  <EventModalProvider>
+    <BaseCalendarInner {...props} />
+  </EventModalProvider>
+);
 
 export default BaseCalendar;

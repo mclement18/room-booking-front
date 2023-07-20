@@ -5,7 +5,7 @@ import {
   useFloating,
   useTransitionStyles,
 } from '@floating-ui/react';
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 import TextField from './TextField';
 import Button from './Button';
 import DateTimePicker from 'react-datetime-picker';
@@ -17,86 +17,54 @@ import { useApiService } from '@/hooks/useApiService';
 import { EventApiService } from '@/services/event_api_service';
 import updateOrUndefined from '@/utils/updateOrUndefined';
 import SelectInput, { SelectOption } from './SelectInput';
+import useEventModalContext from '@/hooks/useEventModalContext';
+import { EventModalActionTypes } from '@/store/event_modal/actions';
+import { isEqual } from 'lodash';
 
 type EventFormInputs = {
   name: string;
   start: Date;
   end: Date;
-  room: RoomDto;
+  room: RoomDto | undefined;
 };
 
 export type ModalCloseReason = 'success' | 'cancel' | 'error';
 
-type ModalProps = {
-  open: boolean;
-  onOpenChange: (open: boolean, event?: Event) => void;
+export type EventModalProps = {
   onClose: (reason: ModalCloseReason) => void;
 };
 
-type CreateProps = {
-  action: 'create';
-  name: string;
-  start: Date;
-  end: Date;
-  resourceId?: number;
-};
+const EventModal = ({ onClose }: EventModalProps) => {
+  const { state, dispatch } = useEventModalContext();
 
-type EditProps = {
-  action: 'edit';
-  event: EventDto & { room: RoomDto };
-};
+  const { open, action, name, start, end, resourceId } = state;
 
-export type EventFormProps = CreateProps | EditProps;
+  const onOpenChange = (open: boolean) =>
+    dispatch({ type: EventModalActionTypes.SET_OPEN, payload: { open } });
 
-export type EventModalProps = EventFormProps & ModalProps;
+  const closeModal = () => onOpenChange(false);
 
-const EventModal = (props: EventModalProps) => {
   const { data: rooms } = useBackendApi<RoomDto[]>('/room');
 
   const { refs, floatingStyles, context } = useFloating({
-    open: props.open,
-    onOpenChange: props.onOpenChange,
+    open,
+    onOpenChange,
   });
 
   const { isMounted, styles } = useTransitionStyles(context);
 
-  const setDefaultValues = useCallback(
-    () =>
-      props.action === 'create'
-        ? {
-            name: props.name,
-            start: props.start,
-            end: props.end,
-            room: rooms?.find(
-              (room) => room.id === props.resourceId
-            ) as RoomDto,
-          }
-        : {
-            name: props.event.name,
-            start: new Date(props.event.start),
-            end: new Date(props.event.end),
-            room: props.event.room,
-          },
-    [props, rooms]
-  );
-
-  const {
-    register,
-    control,
-    handleSubmit,
-    reset,
-    formState: { isDirty },
-  } = useForm<EventFormInputs>({
-    defaultValues: setDefaultValues(),
+  const { control, handleSubmit } = useForm<EventFormInputs>({
+    values: {
+      name,
+      start,
+      end,
+      room: rooms?.find((room) => room.id === resourceId),
+    },
     shouldFocusError: true,
   });
 
-  useEffect(() => {
-    reset(setDefaultValues());
-  }, [reset, setDefaultValues]);
-
   const disableRoomSelection = !(
-    props.action === 'create' && props.resourceId === undefined
+    action === 'create' && resourceId === undefined
   );
 
   const eventApiService = useApiService(EventApiService);
@@ -107,8 +75,10 @@ const EventModal = (props: EventModalProps) => {
     end,
     room,
   }) => {
+    if (room === undefined) return;
+
     let response: EventDto | Partial<EventDto> | undefined;
-    if (props.action === 'create') {
+    if (action === 'create') {
       response = await eventApiService.create({
         name,
         start: start.toJSON(),
@@ -116,34 +86,42 @@ const EventModal = (props: EventModalProps) => {
         roomId: room.id,
       });
     } else {
-      const { event } = props;
+      const event = state.event;
+      const dateChanged =
+        !isEqual(event.start, start.toJSON()) ||
+        !isEqual(event.end, end.toJSON());
       response = await eventApiService.update(event.id, {
         name: updateOrUndefined(event.name, name),
-        start: updateOrUndefined(event.start, start.toJSON()),
-        end: updateOrUndefined(event.end, end.toJSON()),
+        start: dateChanged ? start.toJSON() : undefined,
+        end: dateChanged ? end.toJSON() : undefined,
         roomId: updateOrUndefined(event.room?.id, room.id),
       });
     }
 
     if (response) {
-      props.onClose('success');
+      onClose('success');
     } else {
-      props.onClose('error');
+      onClose('error');
     }
+    closeModal();
   };
 
   const onDelete = async () => {
-    if (props.action === 'edit') {
-      const response = await eventApiService.delete(props.event.id);
+    if (action === 'edit') {
+      const response = await eventApiService.delete(state.event.id);
       if (response) {
-        props.onClose('success');
+        onClose('success');
       } else {
-        props.onClose('error');
+        onClose('error');
       }
+      closeModal();
     }
   };
 
-  const onCancel = () => props.onClose('cancel');
+  const onCancel = () => {
+    onClose('cancel');
+    closeModal();
+  };
 
   if (!isMounted) return null;
 
@@ -171,7 +149,7 @@ const EventModal = (props: EventModalProps) => {
               <div className="p-5 h-full flex flex-col">
                 <div className="mb-6">
                   <h1 className="text-2xl">
-                    {props.action === 'create' && 'New '}Event
+                    {action === 'create' && 'New '}Event
                   </h1>
                   <p>
                     Book a time window by putting your name and optional
@@ -184,12 +162,25 @@ const EventModal = (props: EventModalProps) => {
                 >
                   <div className="w-4/5 mx-auto mb-6">
                     <div className="mb-4">
-                      <TextField
-                        label="Name"
-                        {...register('name', {
+                      <Controller
+                        name="name"
+                        control={control}
+                        rules={{
                           required: 'Event name is required!',
-                        })}
-                        className="w-full"
+                        }}
+                        render={({ field }) => (
+                          <TextField
+                            label="Name"
+                            {...field}
+                            onChange={(e) =>
+                              dispatch({
+                                type: EventModalActionTypes.SET_NAME,
+                                payload: { name: e.currentTarget.value },
+                              })
+                            }
+                            className="w-full"
+                          />
+                        )}
                       />
                     </div>
                     <div className="flex justify-between mb-4">
@@ -200,13 +191,16 @@ const EventModal = (props: EventModalProps) => {
                         <Controller
                           name="start"
                           control={control}
-                          render={({ field: { ref, onChange, ...rest } }) => (
+                          render={({ field: { ref, ...rest } }) => (
                             <DateTimePicker
                               inputRef={ref}
                               {...rest}
                               onChange={(value) => {
                                 if (value !== null) {
-                                  onChange(value);
+                                  dispatch({
+                                    type: EventModalActionTypes.SET_START,
+                                    payload: { start: value },
+                                  });
                                 }
                               }}
                               format="dd/MM/yyyy HH:mm"
@@ -223,13 +217,16 @@ const EventModal = (props: EventModalProps) => {
                         <Controller
                           name="end"
                           control={control}
-                          render={({ field: { ref, onChange, ...rest } }) => (
+                          render={({ field: { ref, ...rest } }) => (
                             <DateTimePicker
                               inputRef={ref}
                               {...rest}
                               onChange={(value) => {
                                 if (value !== null) {
-                                  onChange(value);
+                                  dispatch({
+                                    type: EventModalActionTypes.SET_END,
+                                    payload: { end: value },
+                                  });
                                 }
                               }}
                               format="dd/MM/yyyy HH:mm"
@@ -243,10 +240,19 @@ const EventModal = (props: EventModalProps) => {
                     <Controller
                       name="room"
                       control={control}
+                      rules={{
+                        required: 'Room is required!',
+                      }}
                       render={({ field }) => (
                         <SelectInput<RoomDto>
                           label="Room"
                           {...field}
+                          onChange={(value) =>
+                            dispatch({
+                              type: EventModalActionTypes.SET_RESOURCE_ID,
+                              payload: { resourceId: value.id },
+                            })
+                          }
                           nameGetter={(room) => room.name}
                           disabled={disableRoomSelection}
                           fullWidth
@@ -262,17 +268,13 @@ const EventModal = (props: EventModalProps) => {
                     />
                   </div>
                   <div className="flex mt-auto">
-                    <Button
-                      type="submit"
-                      className="mr-auto"
-                      disabled={!isDirty}
-                    >
-                      {props.action.toUpperCase()}
+                    <Button type="submit" className="mr-auto">
+                      {action.toUpperCase()}
                     </Button>
                     <Button type="button" onClick={onCancel}>
                       CANCEL
                     </Button>
-                    {props.action === 'edit' && (
+                    {action === 'edit' && (
                       <Button type="button" className="ml-2" onClick={onDelete}>
                         DELETE
                       </Button>
